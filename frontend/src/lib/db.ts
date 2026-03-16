@@ -12,36 +12,48 @@ interface SqlDb {
 
 let cachedDb: SqlDb | null = null;
 
+async function loadCSVContent(): Promise<string> {
+  // 1. Try filesystem (works locally)
+  const possiblePaths = [
+    path.join(process.cwd(), 'src', 'data', 'election_data.csv'),
+    path.join(process.cwd(), 'public', 'election_data.csv'),
+    path.join(process.cwd(), 'election_data.csv'),
+  ];
+
+  for (const p of possiblePaths) {
+    try {
+      const content = fs.readFileSync(p, 'utf-8');
+      console.log('CSV loaded from fs:', p);
+      return content;
+    } catch {
+      continue;
+    }
+  }
+
+  // 2. Fallback: fetch from public URL (works on Vercel)
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000';
+
+  console.log('Trying fetch from:', `${baseUrl}/election_data.csv`);
+  const res = await fetch(`${baseUrl}/election_data.csv`);
+  if (res.ok) {
+    console.log('CSV loaded via fetch');
+    return await res.text();
+  }
+
+  throw new Error('election_data.csv not found via fs or fetch');
+}
+
 export async function getDB(): Promise<SqlDb> {
   if (cachedDb) return cachedDb;
 
   const SQL = await initSqlJs();
   const db: SqlDb = new SQL.Database();
 
-  // Try multiple paths for CSV (works both locally and on Vercel)
-  let csvContent = '';
-  const possiblePaths = [
-    path.join(process.cwd(), 'src', 'data', 'election_data.csv'),
-    path.join(process.cwd(), 'public', 'election_data.csv'),
-    path.join(process.cwd(), 'election_data.csv'),
-    path.resolve(__dirname, '..', 'data', 'election_data.csv'),
-    path.join(__dirname, '..', '..', '..', '..', 'public', 'election_data.csv'),
-  ];
-
-  for (const p of possiblePaths) {
-    try {
-      csvContent = fs.readFileSync(p, 'utf-8');
-      console.log('CSV loaded from:', p);
-      break;
-    } catch {
-      continue;
-    }
-  }
-
-  if (!csvContent) {
-    console.error('CSV not found. Tried paths:', possiblePaths);
-    throw new Error('election_data.csv not found');
-  }
+  const csvContent = await loadCSVContent();
 
   const records = parse(csvContent, {
     columns: true,
@@ -88,6 +100,7 @@ export async function getDB(): Promise<SqlDb> {
   db.run(`CREATE INDEX IF NOT EXISTS idx_const_name ON candidates(const_name)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_gender ON candidates(gender)`);
 
+  console.log(`DB loaded: ${records.length} candidates`);
   cachedDb = db;
   return db;
 }
