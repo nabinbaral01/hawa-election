@@ -1,0 +1,12 @@
+{
+  "name": "nepal-election-explorer",
+  "version": "1.0.0",
+  "description": "Nepal Election Data Explorer - Search, filter, sort, and visualize election data",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && node server.js",
+    "dev:frontend": "cd frontend && npx next dev",
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "build": "cd frontend && npx next build"
+  }
+}

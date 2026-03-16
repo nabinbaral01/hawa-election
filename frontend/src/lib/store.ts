@@ -1,0 +1,160 @@
+import { create } from 'zustand';
+
+interface Filters {
+  search: string;
+  party: string;
+  gender: string;
+  district: string;
+  ageGroup: string;
+  sortBy: string;
+  sortOrder: string;
+  page: number;
+}
+
+interface FilterStore extends Filters {
+  setFilter: (key: keyof Filters, value: string | number) => void;
+  resetFilters: () => void;
+  lang: 'en' | 'ne';
+  toggleLang: () => void;
+}
+
+const defaultFilters: Filters = {
+  search: '',
+  party: '',
+  gender: '',
+  district: '',
+  ageGroup: '',
+  sortBy: 'votes',
+  sortOrder: 'desc',
+  page: 1,
+};
+
+export const useFilterStore = create<FilterStore>((set) => ({
+  ...defaultFilters,
+  lang: 'en',
+  setFilter: (key, value) => set((state) => ({ ...state, [key]: value, page: key === 'page' ? (value as number) : 1 })),
+  resetFilters: () => set(defaultFilters),
+  toggleLang: () => set((state) => ({ lang: state.lang === 'en' ? 'ne' : 'en' })),
+}));
+
+// Translation dictionary
+export const translations: Record<string, Record<string, string>> = {
+  en: {
+    title: 'Nepal Election Explorer',
+    subtitle: 'Explore Nepal\'s election data — search candidates, parties, and constituencies',
+    search: 'Search candidates, parties, districts...',
+    candidates: 'Candidates',
+    parties: 'Parties',
+    districts: 'Constituencies',
+    overview: 'Overview',
+    allParties: 'All Parties',
+    allGenders: 'All Genders',
+    allDistricts: 'All Constituencies',
+    allAges: 'All Age Groups',
+    male: 'Male',
+    female: 'Female',
+    other: 'Other',
+    genz: 'Gen Z (14-29)',
+    millennial: 'Millennial (30-44)',
+    genx: 'Gen X (45-59)',
+    boomer: 'Boomer (60+)',
+    votes: 'Votes',
+    age: 'Age',
+    gender: 'Gender',
+    party: 'Party',
+    district: 'District',
+    name: 'Name',
+    constituency: 'Constituency',
+    totalVotes: 'Total Votes',
+    totalCandidates: 'Total Candidates',
+    totalParties: 'Total Parties',
+    totalConstituencies: 'Total Constituencies',
+    avgAge: 'Average Age',
+    topCandidates: 'Top Candidates by Votes',
+    topParties: 'Top Parties by Votes',
+    ageDistribution: 'Age Group Distribution',
+    genderDistribution: 'Gender Distribution',
+    partyDistribution: 'Party Distribution',
+    voteDistribution: 'Vote Distribution',
+    downloadCSV: 'Download CSV',
+    resetFilters: 'Reset Filters',
+    sortBy: 'Sort By',
+    loading: 'Loading...',
+    noResults: 'No results found',
+    previous: 'Previous',
+    next: 'Next',
+    page: 'Page',
+    of: 'of',
+    viewAll: 'View All',
+    winner: 'Winner',
+    competitors: 'Competitors',
+    candidateProfile: 'Candidate Profile',
+    partyDetails: 'Party Details',
+    districtDetails: 'Constituency Details',
+    candidateCount: 'Candidate Count',
+    avgVotes: 'Average Votes',
+    highestVotes: 'Highest Votes',
+    femaleCandidates: 'Female Candidates',
+    maleCandidates: 'Male Candidates',
+    home: 'Home',
+  },
+  ne: {
+    title: 'नेपाल चुनाव एक्सप्लोरर',
+    subtitle: 'नेपालको चुनाव डेटा अन्वेषण गर्नुहोस् — उम्मेदवार, दल र निर्वाचन क्षेत्र खोज्नुहोस्',
+    search: 'उम्मेदवार, दल, जिल्ला खोज्नुहोस्...',
+    candidates: 'उम्मेदवारहरू',
+    parties: 'दलहरू',
+    districts: 'निर्वाचन क्षेत्रहरू',
+    overview: 'अवलोकन',
+    allParties: 'सबै दलहरू',
+    allGenders: 'सबै लिङ्ग',
+    allDistricts: 'सबै निर्वाचन क्षेत्र',
+    allAges: 'सबै उमेर समूह',
+    male: 'पुरुष',
+    female: 'महिला',
+    other: 'अन्य',
+    genz: 'जेन जी (१४-२९)',
+    millennial: 'मिलेनियल (३०-४४)',
+    genx: 'जेन एक्स (४५-५९)',
+    boomer: 'बुमर (६०+)',
+    votes: 'मत',
+    age: 'उमेर',
+    gender: 'लिङ्ग',
+    party: 'दल',
+    district: 'जिल्ला',
+    name: 'नाम',
+    constituency: 'निर्वाचन क्षेत्र',
+    totalVotes: 'कुल मत',
+    totalCandidates: 'कुल उम्मेदवार',
+    totalParties: 'कुल दलहरू',
+    totalConstituencies: 'कुल निर्वाचन क्षेत्र',
+    avgAge: 'औसत उमेर',
+    topCandidates: 'शीर्ष उम्मेदवारहरू',
+    topParties: 'शीर्ष दलहरू',
+    ageDistribution: 'उमेर समूह वितरण',
+    genderDistribution: 'लिङ्ग वितरण',
+    partyDistribution: 'दल वितरण',
+    voteDistribution: 'मत वितरण',
+    downloadCSV: 'CSV डाउनलोड',
+    resetFilters: 'फिल्टर रिसेट',
+    sortBy: 'क्रमबद्ध',
+    loading: 'लोड हुँदैछ...',
+    noResults: 'कुनै नतिजा भेटिएन',
+    previous: 'अघिल्लो',
+    next: 'अर्को',
+    page: 'पृष्ठ',
+    of: 'मध्ये',
+    viewAll: 'सबै हेर्नुहोस्',
+    winner: 'विजेता',
+    competitors: 'प्रतिस्पर्धी',
+    candidateProfile: 'उम्मेदवार प्रोफाइल',
+    partyDetails: 'दल विवरण',
+    districtDetails: 'निर्वाचन क्षेत्र विवरण',
+    candidateCount: 'उम्मेदवार संख्या',
+    avgVotes: 'औसत मत',
+    highestVotes: 'सर्वोच्च मत',
+    femaleCandidates: 'महिला उम्मेदवार',
+    maleCandidates: 'पुरुष उम्मेदवार',
+    home: 'गृहपृष्ठ',
+  },
+};
