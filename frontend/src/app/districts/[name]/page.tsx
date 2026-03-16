@@ -53,29 +53,31 @@ export default function DistrictDetailPage() {
         <h1 className="text-2xl font-bold text-slate-900 mb-2">{s.const_name}</h1>
 
         {/* Winner Banner */}
-        <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-5 mb-6">
-          <div className="flex items-center gap-3">
-            <span className="badge badge-green text-sm px-3 py-1">{t.winner}</span>
-            <Link href={`/candidates/${s.winner.id}`} className="font-bold text-lg text-slate-900 hover:text-red-600">
-              {s.winner.candidate_name}
-            </Link>
-            <span className="text-slate-500">({s.winner.party})</span>
-            <span className="ml-auto text-2xl font-bold text-red-600">{s.winner.votes.toLocaleString()} {t.votes}</span>
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-3 sm:p-5 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="badge badge-green text-xs sm:text-sm px-2 sm:px-3 py-1">{t.winner}</span>
+              <Link href={`/candidates/${s.winner.id}`} className="font-bold text-base sm:text-lg text-slate-900 hover:text-red-600">
+                {s.winner.candidate_name}
+              </Link>
+              <span className="text-slate-500 text-sm">({s.winner.party})</span>
+            </div>
+            <span className="sm:ml-auto text-xl sm:text-2xl font-bold text-red-600">{s.winner.votes.toLocaleString()} {t.votes}</span>
           </div>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
           <div className="stat-card text-center">
-            <div className="text-2xl font-bold text-blue-600">{s.total_candidates}</div>
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">{s.total_candidates}</div>
             <div className="text-xs text-slate-500 mt-1">{t.totalCandidates}</div>
           </div>
           <div className="stat-card text-center">
-            <div className="text-2xl font-bold text-red-600">{s.total_votes.toLocaleString()}</div>
+            <div className="text-xl sm:text-2xl font-bold text-red-600">{s.total_votes.toLocaleString()}</div>
             <div className="text-xs text-slate-500 mt-1">{t.totalVotes}</div>
           </div>
           <div className="stat-card text-center">
-            <div className="text-2xl font-bold text-green-600">{data.partyDistribution.length}</div>
+            <div className="text-xl sm:text-2xl font-bold text-green-600">{data.partyDistribution.length}</div>
             <div className="text-xs text-slate-500 mt-1">{t.totalParties}</div>
           </div>
         </div>
@@ -108,38 +110,39 @@ export default function DistrictDetailPage() {
         </div>
 
         {/* All Candidates Table */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-slate-900 mb-4">All {t.candidates} ({data.candidates.length})</h3>
+        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-5 shadow-sm">
+          <h3 className="font-semibold text-slate-900 mb-4 text-sm sm:text-base">All {t.candidates} ({data.candidates.length})</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">#</th>
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.name}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.party}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.age}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.gender}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden sm:table-cell">{t.party}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden sm:table-cell">{t.age}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden md:table-cell">{t.gender}</th>
                   <th className="text-right py-3 px-2 text-slate-500 font-medium">{t.votes}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.candidates.map((c, i) => (
                   <tr key={c.id} className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${i === 0 ? 'bg-green-50' : ''}`}>
-                    <td className="py-3 px-2 text-slate-400">{i + 1}</td>
-                    <td className="py-3 px-2">
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-400">{i + 1}</td>
+                    <td className="py-2.5 sm:py-3 px-2">
                       <Link href={`/candidates/${c.id}`} className="font-medium text-slate-900 hover:text-red-600">
                         {c.candidate_name}
-                        {i === 0 && <span className="ml-2 badge badge-green">Winner</span>}
+                        {i === 0 && <span className="ml-1 sm:ml-2 badge badge-green">Winner</span>}
                       </Link>
+                      <div className="text-xs text-slate-400 sm:hidden mt-0.5">{c.party}</div>
                     </td>
-                    <td className="py-3 px-2">
+                    <td className="py-2.5 sm:py-3 px-2 hidden sm:table-cell">
                       <Link href={`/parties/${encodeURIComponent(c.party)}`} className="text-slate-600 hover:text-red-600">
                         {c.party}
                       </Link>
                     </td>
-                    <td className="py-3 px-2 text-slate-600">{c.age}</td>
-                    <td className="py-3 px-2">{c.gender}</td>
-                    <td className="py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-600 hidden sm:table-cell">{c.age}</td>
+                    <td className="py-2.5 sm:py-3 px-2 hidden md:table-cell">{c.gender}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
