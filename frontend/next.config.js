@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['sql.js'],
   },
+  outputFileTracingIncludes: {
+    '/api/**': ['./src/data/**'],
+  },
 };
 
 module.exports = nextConfig;

@@ -21,21 +21,27 @@ export async function getDB(): Promise<SqlDb> {
   // Try multiple paths for CSV (works both locally and on Vercel)
   let csvContent = '';
   const possiblePaths = [
+    path.join(process.cwd(), 'src', 'data', 'election_data.csv'),
     path.join(process.cwd(), 'public', 'election_data.csv'),
     path.join(process.cwd(), 'election_data.csv'),
+    path.resolve(__dirname, '..', 'data', 'election_data.csv'),
     path.join(__dirname, '..', '..', '..', '..', 'public', 'election_data.csv'),
   ];
 
   for (const p of possiblePaths) {
     try {
       csvContent = fs.readFileSync(p, 'utf-8');
+      console.log('CSV loaded from:', p);
       break;
     } catch {
       continue;
     }
   }
 
-  if (!csvContent) throw new Error('election_data.csv not found');
+  if (!csvContent) {
+    console.error('CSV not found. Tried paths:', possiblePaths);
+    throw new Error('election_data.csv not found');
+  }
 
   const records = parse(csvContent, {
     columns: true,
