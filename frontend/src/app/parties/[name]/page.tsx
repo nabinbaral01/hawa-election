@@ -53,10 +53,10 @@ export default function PartyDetailPage() {
           ← Back to {t.parties}
         </Link>
 
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">{s.party}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">{s.party}</h1>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 mb-6 sm:mb-8">
           {[
             { label: t.totalVotes, value: s.total_votes.toLocaleString(), color: 'text-red-600' },
             { label: t.candidateCount, value: s.candidate_count, color: 'text-blue-600' },
@@ -67,8 +67,8 @@ export default function PartyDetailPage() {
             { label: t.avgAge, value: s.avg_age, color: 'text-orange-600' },
           ].map((card) => (
             <div key={card.label} className="stat-card text-center">
-              <div className={`text-xl font-bold ${card.color}`}>{card.value}</div>
-              <div className="text-xs text-slate-500 mt-1">{card.label}</div>
+              <div className={`text-base sm:text-xl font-bold ${card.color}`}>{card.value}</div>
+              <div className="text-[10px] sm:text-xs text-slate-500 mt-1">{card.label}</div>
             </div>
           ))}
         </div>
@@ -105,33 +105,34 @@ export default function PartyDetailPage() {
         )}
 
         {/* Candidates Table */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-slate-900 mb-4">All {t.candidates} ({data.candidates.length})</h3>
+        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-5 shadow-sm">
+          <h3 className="font-semibold text-slate-900 mb-4 text-sm sm:text-base">All {t.candidates} ({data.candidates.length})</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">#</th>
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.name}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.constituency}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.age}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.gender}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden sm:table-cell">{t.constituency}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden md:table-cell">{t.age}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden md:table-cell">{t.gender}</th>
                   <th className="text-right py-3 px-2 text-slate-500 font-medium">{t.votes}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.candidates.map((c, i) => (
                   <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="py-3 px-2 text-slate-400">{i + 1}</td>
-                    <td className="py-3 px-2">
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-400">{i + 1}</td>
+                    <td className="py-2.5 sm:py-3 px-2">
                       <Link href={`/candidates/${c.id}`} className="font-medium text-slate-900 hover:text-red-600">
                         {c.candidate_name}
                       </Link>
+                      <div className="text-xs text-slate-400 sm:hidden mt-0.5">{c.const_name}</div>
                     </td>
-                    <td className="py-3 px-2 text-slate-600">{c.const_name}</td>
-                    <td className="py-3 px-2 text-slate-600">{c.age}</td>
-                    <td className="py-3 px-2">{c.gender}</td>
-                    <td className="py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-600 hidden sm:table-cell">{c.const_name}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-600 hidden md:table-cell">{c.age}</td>
+                    <td className="py-2.5 sm:py-3 px-2 hidden md:table-cell">{c.gender}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

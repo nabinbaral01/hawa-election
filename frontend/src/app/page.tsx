@@ -73,17 +73,17 @@ export default function HomePage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 mb-8 sm:mb-10">
           {statCards.map((card) => (
             <div key={card.label} className="stat-card text-center">
-              <div className={`text-2xl font-bold ${card.color}`}>{card.value}</div>
-              <div className="text-xs text-slate-500 mt-1">{card.label}</div>
+              <div className={`text-lg sm:text-2xl font-bold ${card.color}`}>{card.value}</div>
+              <div className="text-[10px] sm:text-xs text-slate-500 mt-1">{card.label}</div>
             </div>
           ))}
         </div>
 
         {/* Charts */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-10">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
           <TopCandidatesChart
             data={stats.topCandidates.map((c) => ({
               name: c.candidate_name.length > 20 ? c.candidate_name.slice(0, 20) + '...' : c.candidate_name,
@@ -119,36 +119,37 @@ export default function HomePage() {
         </div>
 
         {/* Top Candidates Table */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-900">{t.topCandidates}</h3>
-            <Link href="/candidates" className="text-sm text-red-600 hover:text-red-700 font-medium">
+            <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t.topCandidates}</h3>
+            <Link href="/candidates" className="text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium">
               {t.viewAll} →
             </Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">#</th>
                   <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.name}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.party}</th>
-                  <th className="text-left py-3 px-2 text-slate-500 font-medium">{t.constituency}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden sm:table-cell">{t.party}</th>
+                  <th className="text-left py-3 px-2 text-slate-500 font-medium hidden md:table-cell">{t.constituency}</th>
                   <th className="text-right py-3 px-2 text-slate-500 font-medium">{t.votes}</th>
                 </tr>
               </thead>
               <tbody>
                 {stats.topCandidates.map((c, i) => (
                   <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td className="py-3 px-2 text-slate-400">{i + 1}</td>
-                    <td className="py-3 px-2">
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-400">{i + 1}</td>
+                    <td className="py-2.5 sm:py-3 px-2">
                       <Link href={`/candidates/${c.id}`} className="font-medium text-slate-900 hover:text-red-600">
                         {c.candidate_name}
                       </Link>
+                      <div className="text-xs text-slate-400 sm:hidden mt-0.5">{c.party}</div>
                     </td>
-                    <td className="py-3 px-2 text-slate-600">{c.party}</td>
-                    <td className="py-3 px-2 text-slate-600">{c.const_name}</td>
-                    <td className="py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-600 hidden sm:table-cell">{c.party}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-slate-600 hidden md:table-cell">{c.const_name}</td>
+                    <td className="py-2.5 sm:py-3 px-2 text-right font-semibold text-red-600">{c.votes.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
