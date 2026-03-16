@@ -56,17 +56,17 @@ export default function HomePage() {
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">{t.title}</h1>
-          <p className="text-slate-500 text-lg max-w-2xl mx-auto">{t.subtitle}</p>
-          <div className="flex gap-3 justify-center mt-6">
-            <Link href="/candidates" className="px-6 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors">
+        <div className="text-center mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-2 sm:mb-3">{t.title}</h1>
+          <p className="text-slate-500 text-sm sm:text-lg max-w-2xl mx-auto">{t.subtitle}</p>
+          <div className="flex gap-2 sm:gap-3 justify-center mt-4 sm:mt-6 flex-wrap">
+            <Link href="/candidates" className="px-4 sm:px-6 py-2 sm:py-2.5 bg-red-600 text-white rounded-lg text-sm sm:text-base font-medium hover:bg-red-700 transition-colors">
               {t.candidates}
             </Link>
-            <Link href="/parties" className="px-6 py-2.5 border border-slate-300 rounded-lg font-medium hover:bg-slate-50 transition-colors">
+            <Link href="/parties" className="px-4 sm:px-6 py-2 sm:py-2.5 border border-slate-300 rounded-lg text-sm sm:text-base font-medium hover:bg-slate-50 transition-colors">
               {t.parties}
             </Link>
-            <Link href="/districts" className="px-6 py-2.5 border border-slate-300 rounded-lg font-medium hover:bg-slate-50 transition-colors">
+            <Link href="/districts" className="px-4 sm:px-6 py-2 sm:py-2.5 border border-slate-300 rounded-lg text-sm sm:text-base font-medium hover:bg-slate-50 transition-colors">
               {t.districts}
             </Link>
           </div>
