@@ -1,11 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['sql.js'],
-    outputFileTracingIncludes: {
-      '/api/**': ['./src/data/**'],
-    },
-  },
-};
+const nextConfig = {};
 
 module.exports = nextConfig;
