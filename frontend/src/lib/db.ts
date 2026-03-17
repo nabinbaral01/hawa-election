@@ -1,8 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const initSqlJs = require('sql.js');
-import fs from 'fs';
-import path from 'path';
-import { parse } from 'csv-parse/sync';
+import electionData from '@/data/election_data.json';
 
 interface SqlDb {
   run(sql: string, params?: unknown[]): void;
@@ -10,56 +8,24 @@ interface SqlDb {
   close(): void;
 }
 
-let cachedDb: SqlDb | null = null;
-
-async function loadCSVContent(): Promise<string> {
-  // 1. Try filesystem (works locally)
-  const possiblePaths = [
-    path.join(process.cwd(), 'src', 'data', 'election_data.csv'),
-    path.join(process.cwd(), 'public', 'election_data.csv'),
-    path.join(process.cwd(), 'election_data.csv'),
-  ];
-
-  for (const p of possiblePaths) {
-    try {
-      const content = fs.readFileSync(p, 'utf-8');
-      console.log('CSV loaded from fs:', p);
-      return content;
-    } catch {
-      continue;
-    }
-  }
-
-  // 2. Fallback: fetch from public URL (works on Vercel)
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000';
-
-  console.log('Trying fetch from:', `${baseUrl}/election_data.csv`);
-  const res = await fetch(`${baseUrl}/election_data.csv`);
-  if (res.ok) {
-    console.log('CSV loaded via fetch');
-    return await res.text();
-  }
-
-  throw new Error('election_data.csv not found via fs or fetch');
+interface CandidateRow {
+  candidate_id: number;
+  district_id: number;
+  const_name: string;
+  candidate_name: string;
+  age: number;
+  gender: string;
+  party: string;
+  votes: number;
 }
+
+let cachedDb: SqlDb | null = null;
 
 export async function getDB(): Promise<SqlDb> {
   if (cachedDb) return cachedDb;
 
   const SQL = await initSqlJs();
   const db: SqlDb = new SQL.Database();
-
-  const csvContent = await loadCSVContent();
-
-  const records = parse(csvContent, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-  });
 
   db.run(`
     CREATE TABLE IF NOT EXISTS candidates (
@@ -80,18 +46,16 @@ export async function getDB(): Promise<SqlDb> {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  for (const row of records as Record<string, string>[]) {
-    const age = parseInt(row.age, 10);
-    const votes = parseInt(row.votes, 10);
+  for (const row of electionData as CandidateRow[]) {
     stmt.run([
-      parseInt(row.candidate_id, 10) || 0,
-      parseInt(row.district_id, 10) || 0,
-      row.const_name || 'Unknown',
-      row.candidate_name || 'Unknown',
-      isNaN(age) ? 0 : age,
-      row.gender || 'unknown',
-      row.party || 'Independent',
-      isNaN(votes) ? 0 : votes,
+      row.candidate_id,
+      row.district_id,
+      row.const_name,
+      row.candidate_name,
+      row.age,
+      row.gender,
+      row.party,
+      row.votes,
     ]);
   }
   stmt.free();
@@ -100,7 +64,7 @@ export async function getDB(): Promise<SqlDb> {
   db.run(`CREATE INDEX IF NOT EXISTS idx_const_name ON candidates(const_name)`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_gender ON candidates(gender)`);
 
-  console.log(`DB loaded: ${records.length} candidates`);
+  console.log(`DB loaded: ${electionData.length} candidates`);
   cachedDb = db;
   return db;
 }
